@@ -26,8 +26,14 @@ npm install
 
 ```bash
 # Start crawler
-npm start
+npm run start
 ```
+
+input Github username to crawl repositories
+
+e.g. `xudong7`
+
+## Start visualization server
 
 ### Display Data
 
@@ -39,4 +45,3 @@ npm run display
 ## License
 
 MIT
-
