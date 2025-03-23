@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>GitHub仓库分析</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        .chart {
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="languageChart" class="chart"></div>
+    <div id="starChart" class="chart"></div>
+    <div id="forkChart" class="chart"></div>
+    <script>
+        fetch('./repos.json')
+            .then(response => response.json())
+            .then(repos => {
+                // 语言分布统计
+                const languageCount = {};
+                repos.forEach(repo => {
+                    if (repo.language) {
+                        languageCount[repo.language] = (languageCount[repo.language] || 0) + 1;
+                    }
+                });
+
+                // Star数排序
+                const sortedByStars = [...repos].sort((a, b) => b.star - a.star).slice(0, 10);
+
+                // Fork数排序
+                const sortedByForks = [...repos].sort((a, b) => b.fork - a.fork).slice(0, 10);
+
+                // 初始化图表
+                const charts = {
+                    language: echarts.init(document.getElementById('languageChart')),
+                    star: echarts.init(document.getElementById('starChart')),
+                    fork: echarts.init(document.getElementById('forkChart'))
+                };
+
+                // 语言分布饼图
+                charts.language.setOption({
+                    title: { text: '编程语言分布' },
+                    tooltip: { trigger: 'item' },
+                    series: [{
+                        type: 'pie',
+                        data: Object.entries(languageCount).map(([name, value]) => ({ name, value }))
+                    }]
+                });
+
+                // Star数量条形图
+                charts.star.setOption({
+                    title: { text: 'Star数最多的仓库' },
+                    tooltip: { trigger: 'axis' },
+                    xAxis: { type: 'value' },
+                    yAxis: {
+                        type: 'category',
+                        data: sortedByStars.map(repo => repo.repoName)
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: sortedByStars.map(repo => repo.star)
+                    }]
+                });
+
+                // Fork数量条形图
+                charts.fork.setOption({
+                    title: { text: 'Fork数最多的仓库' },
+                    tooltip: { trigger: 'axis' },
+                    xAxis: { type: 'value' },
+                    yAxis: {
+                        type: 'category',
+                        data: sortedByForks.map(repo => repo.repoName)
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: sortedByForks.map(repo => repo.fork)
+                    }]
+                });
+            });
+    </script>
+</body>
+
+</html>
