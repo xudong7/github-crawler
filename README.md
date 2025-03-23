@@ -11,7 +11,7 @@ A tool for crawling GitHub repository information.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/github-crawler.git
+git clone https://github.com/xudong7/github-crawler.git
 ```
 
 ```bash
